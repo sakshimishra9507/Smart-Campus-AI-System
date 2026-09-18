@@ -1,16 +1,13 @@
-# ML Data
+# Tests
 
-Store only synthetic, anonymized, or explicitly authorized datasets here.
+Add automated tests here as each module is implemented.
 
-Do not commit real student personal/academic records to a public GitHub repository.
-
-Recommended example columns:
-
-```text
-attendance_percentage
-previous_score
-internal_score
-assignment_average
-quiz_average
-performance_category
-```
+Recommended coverage:
+- Authentication
+- Role permissions
+- Attendance calculations
+- Timetable conflicts
+- Notice visibility
+- Marks calculations
+- Prediction service
+- Chatbot retrieval
