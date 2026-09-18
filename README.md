@@ -179,6 +179,6 @@ This repository uses the MIT License. See [LICENSE](LICENSE).
 
 Add your project team here.
 
-- Your Name — Developer
-- Team Member 2 — Developer
-- Team Member 3 — Developer
+- Your Name — Sakshi Mishra
+- Team Member 2 — Sakshi Mishra
+- Team Member 3 — Sakshi Mishra
