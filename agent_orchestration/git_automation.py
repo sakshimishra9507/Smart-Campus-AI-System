@@ -180,7 +180,12 @@ class GitAutomation:
             raise GitAutomationError("Patch changed after preview.")
         for item in patch.files:
             self._require_ok(self._git(("add", "--", item.path)), "stage")
-        staged = self._require_ok(self._git(("diff", "--cached")), "staged diff")
+        staged_result = self._git(("diff", "--cached"))
+        if staged_result.returncode != 0:
+            detail = (staged_result.stderr or staged_result.stdout).strip()
+            self.audit.record("staged_diff", False, detail)
+            raise GitAutomationError(f"staged diff failed: {detail}")
+        staged = staged_result.stdout
         if staged != preview.diff:
             raise GitAutomationError("Staged diff differs from the approved preview.")
         result = self._git(("commit", "-m", commit_message))
