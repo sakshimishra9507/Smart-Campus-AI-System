@@ -64,8 +64,9 @@ class ClosedLoopDebuggingWorkflow:
 
         if patch.status != "approved":
             raise ValueError("Only explicitly approved patches may be applied.")
-        if not validate_patch(patch, repository_root):
-            raise ValueError("Patch failed validation before application.")
+        validation = validate_patch(patch, repository_root)
+        if not validation["valid"]:
+            raise ValueError("Patch failed validation before application: " + "; ".join(validation["errors"]))
 
         self.patch_applier.apply(patch, repository_root)
         timeline.emit("patch_applied", patch_id=patch.patch_id)
