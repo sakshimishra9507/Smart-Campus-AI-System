@@ -37,7 +37,7 @@ def approved_patch(tmp_path: Path):
         patch_id="p1",
         status="approved",
         rationale="fix",
-        files=(PatchFile(path="app.py", original="x = 1\n", updated="x = 2\n"),),
+        files=(PatchFile.create("app.py", "x = 1\n", "x = 2\n"),),
     )
 
 
