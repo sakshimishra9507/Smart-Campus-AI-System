@@ -1,0 +1,13 @@
+.patch-review { margin-top: 1rem; }
+.patch-status { font-weight: 600; margin-bottom: .5rem; }
+.patch-diff {
+  white-space: pre-wrap;
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  background: #f8f9fa;
+  max-height: 32rem;
+}
+.patch-review button { margin-right: .5rem; padding: .5rem .9rem; }
+.patch-approve, .patch-reject { cursor: pointer; }
