@@ -223,8 +223,21 @@ class ToolRegistry:
         except KeyError as exc:
             raise PermissionError(f"Tool is not registered: {name}") from exc
 
+    _default_operations = {
+        "repository.list_files": "list",
+        "repository.read_file": "read",
+        "repository.search_code": "search",
+        "repository.find_symbol": "find",
+        "repository.inspect_dependencies": "inspect",
+        "repository.inspect_git_history": "inspect",
+    }
+
     def execute(self, name: str, **arguments: Any) -> ToolResult:
-        return self.get(name)._run("execute", **arguments)
+        tool = self.get(name)
+        operation = self._default_operations.get(name)
+        if operation is None:
+            raise PermissionError(f"No default operation is registered for tool: {name}")
+        return tool._run(operation, **arguments)
 
     def definitions(self) -> list[dict[str, Any]]:
         return [
