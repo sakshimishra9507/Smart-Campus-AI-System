@@ -1,0 +1,22 @@
+.debug-timeline {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.debug-timeline-item {
+  border-left: 3px solid currentColor;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 0.25rem;
+}
+.debug-timeline-item time {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+.debug-timeline-item span {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
