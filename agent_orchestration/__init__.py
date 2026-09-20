@@ -48,3 +48,5 @@ __all__ = [
 
 from .patching import Patch, PatchFile, PatchGenerator, PatchStore, PatchApplier, validate_patch
 from .patch_review import PatchReviewService
+
+from .closed_loop import ClosedLoopDebuggingWorkflow, ValidationReport, WorkflowTimeline
