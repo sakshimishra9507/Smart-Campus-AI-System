@@ -35,7 +35,9 @@ def approved_patch(tmp_path: Path):
     path.write_text("x = 1\n")
     return Patch(
         patch_id="p1",
-        status="approved",
+            session_id="s1",
+            problem="bug",
+            status="approved",
         rationale="fix",
         files=(PatchFile.create("app.py", "x = 1\n", "x = 2\n"),),
     )
