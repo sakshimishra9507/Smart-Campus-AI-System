@@ -74,9 +74,13 @@ class RepositoryTool:
     def __init__(self, context: ToolContext) -> None:
         self.context = context
 
+    _default_operation = "execute"
+
     def _run(self, operation: str, **arguments: Any) -> ToolResult:
         logger.info("agent_tool.start tool=%s operation=%s", self.name, operation)
         try:
+            if operation == "execute":
+                operation = self._default_operation
             data = self.execute(operation, **arguments)
             logger.info("agent_tool.success tool=%s operation=%s", self.name, operation)
             return ToolResult(self.name, True, data=data)
@@ -94,6 +98,7 @@ class RepositoryTool:
 
 
 class ListFilesTool(RepositoryTool):
+    _default_operation = "list"
     name = "repository.list_files"
 
     def execute(self, operation: str = "list", *, prefix: str = "", max_results: int = 100) -> Mapping[str, Any]:
@@ -114,6 +119,7 @@ class ListFilesTool(RepositoryTool):
 
 
 class ReadFileTool(RepositoryTool):
+    _default_operation = "read"
     name = "repository.read_file"
 
     def execute(self, operation: str = "read", *, path: str, max_bytes: int | None = None) -> Mapping[str, Any]:
@@ -135,6 +141,7 @@ class ReadFileTool(RepositoryTool):
 
 
 class SearchCodeTool(RepositoryTool):
+    _default_operation = "search"
     name = "repository.search_code"
 
     def __init__(self, context: ToolContext) -> None:
@@ -157,6 +164,7 @@ class SearchCodeTool(RepositoryTool):
 
 
 class FindSymbolTool(RepositoryTool):
+    _default_operation = "find"
     name = "repository.find_symbol"
 
     def __init__(self, context: ToolContext) -> None:
@@ -176,6 +184,7 @@ class FindSymbolTool(RepositoryTool):
 
 
 class InspectDependenciesTool(RepositoryTool):
+    _default_operation = "inspect"
     name = "repository.inspect_dependencies"
 
     def execute(self, operation: str = "inspect", *, max_results: int = 100) -> Mapping[str, Any]:
@@ -196,6 +205,7 @@ class GitHistoryProvider(Protocol):
 
 
 class InspectGitHistoryTool(RepositoryTool):
+    _default_operation = "inspect"
     name = "repository.inspect_git_history"
 
     def __init__(self, context: ToolContext, provider: GitHistoryProvider | None = None) -> None:
@@ -233,11 +243,15 @@ class ToolRegistry:
     }
 
     def execute(self, name: str, **arguments: Any) -> ToolResult:
-        tool = self.get(name)
-        operation = self._default_operations.get(name)
-        if operation is None:
-            raise PermissionError(f"No default operation is registered for tool: {name}")
-        return tool._run(operation, **arguments)
+        try:
+            tool = self.get(name)
+            operation = self._default_operations.get(name)
+            if operation is None:
+                raise PermissionError(f"No default operation is registered for tool: {name}")
+            return tool._run(operation, **arguments)
+        except Exception as exc:
+            logger.warning("agent_tool.registry_failure tool=%s error=%s", name, exc)
+            return ToolResult(name, False, error=str(exc))
 
     def definitions(self) -> list[dict[str, Any]]:
         return [
