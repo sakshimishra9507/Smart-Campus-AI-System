@@ -10,6 +10,7 @@ on:
       - feature/autonomous-debugging-workflow
       - feature/repository-execution-sandbox
       - feature/closed-loop-debugging
+      - feature/git-automation
   pull_request:
     branches:
       - main
