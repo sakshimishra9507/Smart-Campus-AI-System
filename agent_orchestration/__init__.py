@@ -50,3 +50,5 @@ from .patching import Patch, PatchFile, PatchGenerator, PatchStore, PatchApplier
 from .patch_review import PatchReviewService
 
 from .closed_loop import ClosedLoopDebuggingWorkflow, ValidationReport, WorkflowTimeline
+
+from .git_automation import GitAutomation, GitAutomationError, GitAutomationResult, CommitPlan, GitStatus, GitOperationStatus, AuditTrail
