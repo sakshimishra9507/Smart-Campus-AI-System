@@ -8,6 +8,7 @@ on:
       - feature/ai-llm-infrastructure
       - feature/agent-orchestration
       - feature/autonomous-debugging-workflow
+      - feature/repository-execution-sandbox
   pull_request:
     branches:
       - main
