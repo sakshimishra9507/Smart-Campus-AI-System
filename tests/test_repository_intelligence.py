@@ -13,6 +13,7 @@ def make_repo(tmp_path):
 
 
 def test_scanner_and_language_detection(tmp_path):
+    make_repo(tmp_path)
     files,_=RepositoryScanner().scan(str(tmp_path))
     assert {f.path for f in files} >= {"app.py","urls.py","requirements.txt"}
     assert LanguageDetector().detect(files)["Python"] >= 3
