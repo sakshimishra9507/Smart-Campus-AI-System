@@ -72,6 +72,13 @@ def test_commit_requires_preview_ack(tmp_path):
 def test_commit_operation(tmp_path):
     p = patch(tmp_path); g = make(tmp_path)
     plan = g.preview(p, "fix"); g.acknowledge_preview(plan)
+    def runner(*args, **kwargs):
+        cmd = args[0]
+        if cmd[-1:] == ["--show-current"]: out = "feature/test\n"
+        elif "diff" in cmd: out = plan.diff
+        else: out = "ok\n"
+        return subprocess.CompletedProcess(cmd, 0, out, "")
+    g._runner = runner
     s = g.commit(p, "fix", preview=plan)
     assert s.success
 
