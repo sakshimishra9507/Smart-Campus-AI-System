@@ -9,6 +9,7 @@ on:
       - feature/agent-orchestration
       - feature/autonomous-debugging-workflow
       - feature/repository-execution-sandbox
+      - feature/closed-loop-debugging
   pull_request:
     branches:
       - main

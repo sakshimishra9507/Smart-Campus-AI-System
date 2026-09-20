@@ -1,0 +1,7 @@
+.workflow-timeline { display: flex; flex-direction: column; gap: 0; }
+.workflow-timeline-item { display: flex; gap: 12px; padding: 10px 0; border-left: 2px solid #bbb; margin-left: 9px; }
+.workflow-timeline-marker { margin-left: -11px; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid #888; text-align: center; font-size: 12px; line-height: 14px; }
+.workflow-timeline-item.completed .workflow-timeline-marker { border-color: #2e7d32; }
+.workflow-timeline-content { padding-left: 4px; flex: 1; }
+.workflow-timeline-content pre { overflow-x: auto; white-space: pre-wrap; font-size: 12px; }
+.workflow-timeline-item.pending { opacity: .55; }
