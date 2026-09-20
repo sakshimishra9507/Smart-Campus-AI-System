@@ -49,7 +49,12 @@ class RepositoryAnalyzer:
     def analyze(self, repository_root: str) -> Mapping[str, Any]:
         if self.analyzer is None:
             self.analyzer = DeterministicRepositoryAnalyzer(repository_root)
-        result = self.analyzer.analyze()
+            result = self.analyzer.analyze()
+        else:
+            try:
+                result = self.analyzer.analyze(repository_root)
+            except TypeError:
+                result = self.analyzer.analyze()
         return {
             "architecture_summary": result.architecture_summary,
             "languages": result.languages,
