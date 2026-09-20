@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feature/repository-intelligence
+      - feature/ai-llm-infrastructure
   pull_request:
     branches:
       - main
