@@ -55,6 +55,15 @@ class RepositoryAnalyzer:
                 result = self.analyzer.analyze(repository_root)
             except TypeError:
                 result = self.analyzer.analyze()
+        if isinstance(result, Mapping):
+            return {
+                "architecture_summary": result.get("architecture_summary", {}),
+                "languages": result.get("languages", {}),
+                "frameworks": result.get("frameworks", {}),
+                "entry_points": result.get("entry_points", []),
+                "test_frameworks": result.get("test_frameworks", []),
+                "api_routes": result.get("api_routes", []),
+            }
         return {
             "architecture_summary": result.architecture_summary,
             "languages": result.languages,
