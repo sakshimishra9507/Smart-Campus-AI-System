@@ -89,6 +89,9 @@ class LLMService:
                 logger.exception("Non-retryable LLM failure")
                 raise
 
+        if isinstance(last_error, LLMTimeoutError):
+            raise last_error
+
         raise RetryExhaustedError(
             f"LLM request failed after {attempts} attempts.",
             last_error=last_error,
