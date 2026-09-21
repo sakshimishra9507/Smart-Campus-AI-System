@@ -88,8 +88,15 @@ jobs:
             'SANDBOX_IMAGE=repository-sandbox:ci' \
             'LOG_LEVEL=INFO' > .env.production
           docker compose -f docker-compose.production.yml build
-          docker compose -f docker-compose.production.yml up -d postgres redis api
+          docker compose -f docker-compose.production.yml up -d postgres redis
           trap 'docker compose -f docker-compose.production.yml down -v' EXIT
+          for i in $(seq 1 30); do
+            if docker compose -f docker-compose.production.yml exec -T postgres pg_isready -U repository_agent -d repository_agent; then break; fi
+            docker compose -f docker-compose.production.yml logs --tail=20 postgres || true
+            sleep 2
+          done
+          docker compose -f docker-compose.production.yml exec -T postgres pg_isready -U repository_agent -d repository_agent
+          docker compose -f docker-compose.production.yml up -d api
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8000/healthz/; then break; fi
             sleep 2
