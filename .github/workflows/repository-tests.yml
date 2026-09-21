@@ -12,6 +12,7 @@ on:
       - feature/closed-loop-debugging
       - feature/git-automation
       - feature/realtime-agent-progress
+      - feature/production-deployment
   pull_request:
     branches:
       - main
