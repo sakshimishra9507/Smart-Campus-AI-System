@@ -98,6 +98,9 @@ jobs:
           done
           docker compose --env-file .env.production -f docker-compose.production.yml exec -T postgres pg_isready -U repository_agent -d repository_agent
           docker compose --env-file .env.production -f docker-compose.production.yml up -d api
+          sleep 5
+          docker compose --env-file .env.production -f docker-compose.production.yml ps
+          docker compose --env-file .env.production -f docker-compose.production.yml logs --tail=100 api || true
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:8000/healthz/; then break; fi
             sleep 2
