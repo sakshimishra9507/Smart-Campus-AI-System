@@ -52,3 +52,5 @@ from .patch_review import PatchReviewService
 from .closed_loop import ClosedLoopDebuggingWorkflow, ValidationReport, WorkflowTimeline
 
 from .git_automation import GitAutomation, GitAutomationError, GitAutomationResult, CommitPlan, GitStatus, GitOperationStatus, AuditTrail
+
+from .realtime_progress import AgentProgressBus, ProgressEvent, PROGRESS_EVENTS

@@ -11,6 +11,7 @@ on:
       - feature/repository-execution-sandbox
       - feature/closed-loop-debugging
       - feature/git-automation
+      - feature/realtime-agent-progress
   pull_request:
     branches:
       - main
