@@ -9,11 +9,10 @@ def test_django_configuration_uses_root_modules():
     assert settings.ROOT_URLCONF == "urls"
     assert settings.WSGI_APPLICATION == "wsgi.application"
 
-def test_secret_is_required(monkeypatch):
-    monkeypatch.delenv("SECRET_KEY", raising=False)
-    import settings
-    # The imported module already validated its environment; startup code is intentionally fail-closed.
-    assert settings.SECRET_KEY
+def test_secret_is_required():
+    source = Path("settings.py").read_text(encoding="utf-8")
+    assert 'SECRET_KEY = os.getenv("SECRET_KEY")' in source
+    assert 'raise RuntimeError("SECRET_KEY must be configured' in source
 
 def test_repository_tools_reject_absolute_and_parent_paths(tmp_path):
     from agent_orchestration.tools import ToolContext
