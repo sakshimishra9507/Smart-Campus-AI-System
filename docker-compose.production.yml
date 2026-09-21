@@ -1,0 +1,54 @@
+services:
+  api:
+    build: {context: ., dockerfile: Dockerfile}
+    env_file: .env.production
+    command: ["gunicorn","--bind","0.0.0.0:8000","--workers","2","--threads","2","--timeout","60","--access-logfile","-","--error-logfile","-","wsgi:application"]
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp:size=64m,noexec,nosuid,nodev"]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    volumes: ["staticfiles:/app/staticfiles","media:/app/media"]
+    healthcheck: {test: ["CMD","curl","-fsS","http://127.0.0.1:8000/healthz/"], interval: 20s, timeout: 5s, retries: 3, start_period: 30s}
+  worker:
+    build: {context: ., dockerfile: Dockerfile}
+    env_file: .env.production
+    command: ["python","worker.py"]
+    depends_on: {redis: {condition: service_healthy}}
+    restart: unless-stopped
+    read_only: true
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    restart: unless-stopped
+    healthcheck: {test: ["CMD-SHELL","pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"], interval: 10s, timeout: 5s, retries: 5}
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server","--appendonly","yes"]
+    volumes: ["redis_data:/data"]
+    restart: unless-stopped
+    healthcheck: {test: ["CMD","redis-cli","ping"], interval: 10s, timeout: 5s, retries: 5}
+  sandbox:
+    build: {context: ., dockerfile: sandbox.Dockerfile}
+    image: repository-sandbox:production
+    read_only: true
+    network_mode: none
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1.0
+    tmpfs: ["/tmp:size=64m,noexec,nosuid,nodev"]
+volumes:
+  postgres_data:
+  redis_data:
+  staticfiles:
+  media:
