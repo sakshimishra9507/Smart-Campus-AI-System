@@ -15,7 +15,7 @@ docker compose -f docker-compose.production.yml run --rm api python manage.py mi
 ## 5. Production build
 docker compose -f docker-compose.production.yml build
 
-## 6. Deployment
+For a real HTTPS deployment, keep `SECURE_SSL_REDIRECT=True` and terminate TLS at the reverse proxy/load balancer. The CI smoke deployment disables this redirect only because it intentionally probes plain HTTP inside the runner.\n\n## 6. Deployment
 Create .env.production from .env.production.example with your secret manager, then docker compose -f docker-compose.production.yml up -d. Check /healthz/ and /readyz/.
 
 ## 7. Rollback
