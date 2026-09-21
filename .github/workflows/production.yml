@@ -48,7 +48,24 @@ jobs:
       - name: Build sandbox image
         run: docker build -f sandbox.Dockerfile -t repository-sandbox:ci .
       - name: Validate compose
-        run: docker compose -f docker-compose.production.yml config
+        run: |
+          printf '%s\n' \
+            'SECRET_KEY=ci-test-only-not-for-production' \
+            'DEBUG=False' \
+            'ALLOWED_HOSTS=localhost' \
+            'CSRF_TRUSTED_ORIGINS=http://localhost:8000' \
+            'POSTGRES_DB=repository_agent' \
+            'POSTGRES_USER=repository_agent' \
+            'POSTGRES_PASSWORD=ci-only-password' \
+            'DB_HOST=postgres' \
+            'DB_PORT=5432' \
+            'DB_NAME=repository_agent' \
+            'DB_USER=repository_agent' \
+            'DB_PASSWORD=ci-only-password' \
+            'REDIS_URL=redis://redis:6379/0' \
+            'SANDBOX_IMAGE=repository-sandbox:ci' \
+            'LOG_LEVEL=INFO' > .env.production
+          docker compose -f docker-compose.production.yml config
 
       - name: Production-like smoke deployment
         env:
