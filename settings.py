@@ -52,7 +52,7 @@ ASGI_APPLICATION = "asgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("DB_NAME", "smartcampus"),
         "USER": os.getenv("DB_USER", "root"),
         "PASSWORD": os.getenv("DB_PASSWORD", ""),
@@ -79,6 +79,10 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": os.getenv("REDIS_URL", "redis://redis:6379/0")}}
+
+MIDDLEWARE.insert(1, "rate_limit.RateLimitMiddleware")
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
