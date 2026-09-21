@@ -50,6 +50,36 @@ jobs:
       - name: Validate compose
         run: docker compose -f docker-compose.production.yml config
 
+      - name: Production-like smoke deployment
+        env:
+          SECRET_KEY: ci-test-only-not-for-production
+        run: |
+          printf '%s\n' \
+            'SECRET_KEY=ci-test-only-not-for-production' \
+            'DEBUG=False' \
+            'ALLOWED_HOSTS=localhost' \
+            'CSRF_TRUSTED_ORIGINS=http://localhost:8000' \
+            'POSTGRES_DB=repository_agent' \
+            'POSTGRES_USER=repository_agent' \
+            'POSTGRES_PASSWORD=ci-only-password' \
+            'DB_HOST=postgres' \
+            'DB_PORT=5432' \
+            'DB_NAME=repository_agent' \
+            'DB_USER=repository_agent' \
+            'DB_PASSWORD=ci-only-password' \
+            'REDIS_URL=redis://redis:6379/0' \
+            'SANDBOX_IMAGE=repository-sandbox:ci' \
+            'LOG_LEVEL=INFO' > .env.production
+          docker compose -f docker-compose.production.yml build
+          docker compose -f docker-compose.production.yml up -d postgres redis api
+          trap 'docker compose -f docker-compose.production.yml down -v' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/healthz/; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:8000/healthz/
+          curl -fsS http://127.0.0.1:8000/readyz/
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: container-build
