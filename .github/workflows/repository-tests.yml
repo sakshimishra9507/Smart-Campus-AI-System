@@ -48,5 +48,7 @@ jobs:
           python -m pip install pytest
 
       - name: Run test suite
+        env:
+          SECRET_KEY: ci-test-only-not-for-production
         run: |
           python -m pytest -q
